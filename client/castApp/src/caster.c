@@ -118,7 +118,7 @@ void casterInit(caster_t *self)
     self->timeout = reccastTimeout;
 
     if(shSocketPair(self->wakeup))
-        cantProceed("casterInit failed to create shutdown socket");
+        cantProceed("casterInit failed to create shutdown socket: %d\n", SOCKERRNO);
 }
 
 void casterShutdown(caster_t *self)
