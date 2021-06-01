@@ -18,6 +18,10 @@
 #  define MSG_NOSIGNAL 0
 #endif
 
+#ifdef _MSC_VER
+typedef epicsInt64 ssize_t;
+#endif
+
 typedef struct {
     SOCKET sd; /* data socket */
     SOCKET wakeup; /* force timeout socket */
