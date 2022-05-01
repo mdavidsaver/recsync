@@ -7,7 +7,7 @@ from zope.interface import implementer
 
 from twisted import plugin
 from twisted.python import usage, log
-from twisted.internet import reactor, defer
+from twisted.internet import defer
 from twisted.internet.error import CannotListenError
 from twisted.application import service
 
@@ -31,8 +31,6 @@ class Log2Twisted(logging.StreamHandler):
         pass
 
 class RecService(service.MultiService):
-    reactor = reactor
-
     def __init__(self, config):
         service.MultiService.__init__(self)
         self.annperiod = float(config.get('announceInterval', '15.0'))
@@ -64,7 +62,7 @@ class RecService(service.MultiService):
 
 
     def privilegedStartService(self):
-        
+        from twisted.internet import reactor
         print('Starting')
 
         # Start TCP server on random port
@@ -77,7 +75,7 @@ class RecService(service.MultiService):
         # Attaching CastFactory to ProcessorController
         self.tcpFactory.commit = self.ctrl.commit
 
-        self.tcp = self.reactor.listenTCP(self.port, self.tcpFactory,
+        self.tcp = reactor.listenTCP(self.port, self.tcpFactory,
                                           interface=self.bind)
         try:
             self.tcp.startListening()
@@ -96,7 +94,7 @@ class RecService(service.MultiService):
                                   udpaddrs=self.addrlist,
                                   period=self.annperiod)
 
-        self.udp = SharedUDP(self.port, self.udpProto, reactor=self.reactor,
+        self.udp = SharedUDP(self.port, self.udpProto, reactor=reactor,
                              interface=self.bind)
         self.udp.startListening()
 
