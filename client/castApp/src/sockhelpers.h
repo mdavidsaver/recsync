@@ -24,6 +24,14 @@
 #  define MSG_NOSIGNAL 0
 #endif
 
+/* Try to distinguish the RTEMS "classic" network stack from the newer libbsd stack
+ */
+#if defined(__rtems__) && defined(__has_include)
+#  if __has_include(<machine/rtems-bsd-version.h>)
+#    define RTEMS_HAS_LIBBSD
+#  endif
+#endif
+
 typedef struct {
     SOCKET sd; /* data socket */
     SOCKET wakeup; /* force timeout socket */
